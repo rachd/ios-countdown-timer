@@ -54,15 +54,16 @@
 
 - (void)targetMethod:(NSTimer *)theTimer {
 //    NSDate *startDate = [[theTimer userInfo] objectForKey:@"StartDate"];
-    NSLog(@"Timer finished");//, startDate);
+//    NSLog(@"Timer finished at %@", startDate);
     
-//    UIAlertController *timerAlert = [UIAlertController alertControllerWithTitle:@"Alert" message:@"The timer has finished" preferredStyle:UIAlertControllerStyleAlert];
-//    
-//    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-//                                                          handler:^(UIAlertAction * action) {}];
-//    
-//    [alert addAction:defaultAction];
-//    [self presentViewController:alert animated:YES completion:nil];
+    UIAlertController *timerAlert = [UIAlertController alertControllerWithTitle:@"Alert" message:@"The timer has finished" preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK"
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:nil];
+    
+    [timerAlert addAction:defaultAction];
+    [self presentViewController:timerAlert animated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {
