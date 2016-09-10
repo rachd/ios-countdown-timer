@@ -33,7 +33,36 @@
     self.startButton = [UIButton buttonWithType:UIButtonTypeSystem];
     self.startButton.frame = CGRectMake(20, self.view.frame.size.height - 120, self.view.frame.size.width - 40, 40);
     [self.startButton setTitle:@"Start Timer" forState:UIControlStateNormal];
+    [self.startButton addTarget:self
+                         action:@selector(startOneOffTimer:)
+               forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.startButton];
+}
+
+- (void)startOneOffTimer:sender {
+    
+    [NSTimer scheduledTimerWithTimeInterval:self.timer.countDownDuration
+                                     target:self
+                                   selector:@selector(targetMethod:)
+                                   userInfo:nil//[self userInfo]
+                                    repeats:NO];
+}
+
+- (NSDictionary *)userInfo {
+    return @{ @"StartDate" : [NSDate date] };
+}
+
+- (void)targetMethod:(NSTimer *)theTimer {
+//    NSDate *startDate = [[theTimer userInfo] objectForKey:@"StartDate"];
+    NSLog(@"Timer finished");//, startDate);
+    
+//    UIAlertController *timerAlert = [UIAlertController alertControllerWithTitle:@"Alert" message:@"The timer has finished" preferredStyle:UIAlertControllerStyleAlert];
+//    
+//    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+//                                                          handler:^(UIAlertAction * action) {}];
+//    
+//    [alert addAction:defaultAction];
+//    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {
