@@ -14,7 +14,9 @@
 @property (nonatomic, strong) UIButton *startButton;
 @property (nonatomic, strong) UILabel *countdownLabel;
 @property (nonatomic, strong) NSTimer *secondsTimer;
+@property (nonatomic, strong) NSTimer *mainTimer;
 @property (nonatomic) NSTimeInterval secondsRemaining;
+@property (nonatomic) BOOL timerRunning;
 
 @end
 
@@ -28,6 +30,8 @@
     self.timer.datePickerMode = UIDatePickerModeCountDownTimer;
     [self.view addSubview:self.timer];
     
+    self.timerRunning = NO;
+    
     [self setUpStartButton];
     [self setUpCountDownLabel];
     
@@ -37,24 +41,36 @@
     self.startButton = [UIButton buttonWithType:UIButtonTypeSystem];
     self.startButton.frame = CGRectMake(20, self.view.frame.size.height - 120, self.view.frame.size.width - 40, 40);
     [self.startButton setTitle:@"Start Timer" forState:UIControlStateNormal];
+    [self.startButton setTitle:@"Stop Timer" forState:UIControlStateSelected];
     [self.startButton addTarget:self
-                         action:@selector(startTimer:)
+                         action:@selector(buttonTapped)
                forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.startButton];
 }
 
 - (void)setUpCountDownLabel {
-    self.countdownLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height - 160, self.view.frame.size.width - 40, 40)];
-    self.countdownLabel.text = @"seconds remaining: ";
+    self.countdownLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height - 200, self.view.frame.size.width - 40, 40)];
     [self.view addSubview:self.countdownLabel];
 }
 
-- (void)startTimer:sender {
+- (void)buttonTapped {
+    if (self.timerRunning) {
+        [self stopTimers];
+        self.startButton.selected = NO;
+    } else {
+        [self startTimers];
+        self.startButton.selected = YES;
+    }
+}
+
+- (void)startTimers {
+    self.timerRunning = YES;
     
     self.secondsRemaining = self.timer.countDownDuration;
-    NSLog(@"seconds remaining: %f", self.secondsRemaining);
     
-    [NSTimer scheduledTimerWithTimeInterval:self.secondsRemaining
+    self.countdownLabel.text = [NSString stringWithFormat:@"seconds remaining; %f", self.secondsRemaining];
+    
+    self.mainTimer = [NSTimer scheduledTimerWithTimeInterval:self.secondsRemaining
                                      target:self
                                    selector:@selector(finishMainTimer:)
                                    userInfo:nil//[self userInfo]
@@ -75,13 +91,13 @@
     self.countdownLabel.text = [NSString stringWithFormat:@"seconds remaining: %f", self.secondsRemaining];
 }
 
-- (NSDictionary *)userInfo {
-    return @{ @"StartDate" : [NSDate date] };
+- (void)stopTimers {
+    [self.secondsTimer invalidate];
+    [self.mainTimer invalidate];
+    self.timerRunning = NO;
 }
 
 - (void)finishMainTimer:(NSTimer *)theTimer {
-//    NSDate *startDate = [[theTimer userInfo] objectForKey:@"StartDate"];
-//    NSLog(@"Timer finished at %@", startDate);
     
     [self.secondsTimer invalidate];
     
