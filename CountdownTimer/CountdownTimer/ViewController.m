@@ -50,25 +50,25 @@
 
 - (void)setUpCountDownLabel {
     self.countdownLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height - 200, self.view.frame.size.width - 40, 40)];
+    self.countdownLabel.textAlignment = NSTextAlignmentCenter;
+    self.countdownLabel.font = [UIFont systemFontOfSize:30];
+    self.countdownLabel.text = [self formatTimeFromSeconds:0];
     [self.view addSubview:self.countdownLabel];
 }
 
 - (void)buttonTapped {
     if (self.timerRunning) {
         [self stopTimers];
-        self.startButton.selected = NO;
     } else {
         [self startTimers];
-        self.startButton.selected = YES;
     }
 }
 
 - (void)startTimers {
     self.timerRunning = YES;
-    
+    self.startButton.selected = YES;
     self.secondsRemaining = self.timer.countDownDuration;
-    
-    self.countdownLabel.text = [NSString stringWithFormat:@"seconds remaining; %f", self.secondsRemaining];
+    self.countdownLabel.text = [self formatTimeFromSeconds:self.secondsRemaining];
     
     self.mainTimer = [NSTimer scheduledTimerWithTimeInterval:self.secondsRemaining
                                      target:self
@@ -88,18 +88,20 @@
 
 - (void)updateTimeLabel {
     self.secondsRemaining --;
-    self.countdownLabel.text = [NSString stringWithFormat:@"seconds remaining: %f", self.secondsRemaining];
+    self.countdownLabel.text = [self formatTimeFromSeconds:self.secondsRemaining];
 }
 
 - (void)stopTimers {
     [self.secondsTimer invalidate];
     [self.mainTimer invalidate];
+    self.countdownLabel.text = [self formatTimeFromSeconds:0];
     self.timerRunning = NO;
+    self.startButton.selected = NO;
 }
 
 - (void)finishMainTimer:(NSTimer *)theTimer {
     
-    [self.secondsTimer invalidate];
+    [self stopTimers];
     
     UIAlertController *timerAlert = [UIAlertController alertControllerWithTitle:@"Alert" message:@"The timer has finished" preferredStyle:UIAlertControllerStyleAlert];
     
@@ -109,6 +111,15 @@
     
     [timerAlert addAction:defaultAction];
     [self presentViewController:timerAlert animated:YES completion:nil];
+}
+
+- (NSString *)formatTimeFromSeconds:(int)totalSeconds {
+    int seconds = totalSeconds % 60;
+    int minutes = (totalSeconds / 60) % 60;
+    int hours = totalSeconds / 3600;
+    
+    return [NSString stringWithFormat:@"%02d:%02d:%02d",hours, minutes, seconds];
+
 }
 
 - (void)didReceiveMemoryWarning {
