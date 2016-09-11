@@ -10,7 +10,7 @@
 
 @interface ViewController ()
 
-@property (nonatomic, strong) UIDatePicker *timer;
+@property (nonatomic, strong) UIDatePicker *timerPicker;
 @property (nonatomic, strong) UIButton *startButton;
 @property (nonatomic, strong) UILabel *countdownLabel;
 @property (nonatomic, strong) NSTimer *secondsTimer;
@@ -26,15 +26,18 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    self.timer = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, self.view.frame.size.height - 260)];
-    self.timer.datePickerMode = UIDatePickerModeCountDownTimer;
-    [self.view addSubview:self.timer];
-    
     self.timerRunning = NO;
     
+    [self setUpTimerPicker];
     [self setUpStartButton];
     [self setUpCountDownLabel];
     
+}
+
+- (void)setUpTimerPicker {
+    self.timerPicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, self.view.frame.size.height - 260)];
+    self.timerPicker.datePickerMode = UIDatePickerModeCountDownTimer;
+    [self.view addSubview:self.timerPicker];
 }
 
 - (void)setUpStartButton {
@@ -67,7 +70,7 @@
 - (void)startTimers {
     self.timerRunning = YES;
     self.startButton.selected = YES;
-    self.secondsRemaining = self.timer.countDownDuration;
+    self.secondsRemaining = self.timerPicker.countDownDuration;
     self.countdownLabel.text = [self formatTimeFromSeconds:self.secondsRemaining];
     
     self.mainTimer = [NSTimer scheduledTimerWithTimeInterval:self.secondsRemaining
